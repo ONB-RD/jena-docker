@@ -46,9 +46,21 @@ else
 fi
 
 files=""
+i=0
 for f in $patterns; do
   if [ -f $f ] ; then
     files="$files $f"
+    let "i++"
+    if [[ $(( $i % 1000 )) == 0 ]]; then
+      echo "#########"
+      echo "Loading to Fuseki TDB database $DB:"
+      echo ""
+      echo $files
+      echo "#########"
+      #
+      $FUSEKI_HOME/tdbloader --loc=$FUSEKI_BASE/databases/$DB $files
+      files=""
+    fi
   else
     if [ $# -gt 0 ] ; then
       # User-specified file/pattern missing
@@ -56,17 +68,3 @@ for f in $patterns; do
     fi
   fi
 done
-
-if [ "$files" == "" ] ; then
-  echo "No files found for: " >&2
-  echo "$patterns" >&2
-  exit 1
-fi
-
-echo "#########"
-echo "Loading to Fuseki TDB database $DB:"
-echo ""
-echo $files
-echo "#########"
-
-exec $FUSEKI_HOME/tdbloader --loc=$FUSEKI_BASE/databases/$DB $files
