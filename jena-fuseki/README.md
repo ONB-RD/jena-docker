@@ -90,6 +90,10 @@ disk space or speed requirements), specify it using `-v`:
 Note that the `/fuseki` volume must only be accessed from a single Fuseki
 container at a time.
 
+Alternatively you can use Volumes, specify it using `--mount`:
+
+    docker run -d --name fuseki -p 3030:3030 --mount source=fuseki-data,target=/fuseki stain/jena-fuseki
+
 To check the logs for the container you gave `--name fuseki`, use:
 
     docker logs fuseki
@@ -152,6 +156,8 @@ directory in order to use tab-completion etc. without exposing the path on the
 host. The `./load.sh` will expand patterns like `*.ttl` - you might have to
 use single quotes (e.g. `'*.ttl'`) on the host to avoid them being expanded
 locally.
+
+**NB:** The `./load.sh` loads files in a bunch with size 1000.
 
 If you don't specify any filenames to `load.sh`, all filenames directly under
 `/staging` that match these GLOB patterns will be loaded:
